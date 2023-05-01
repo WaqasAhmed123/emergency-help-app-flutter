@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>934406748528-qarhg9kb271qqc7sjjamrrc3pir2t1fn.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.934406748528-qarhg9kb271qqc7sjjamrrc3pir2t1fn</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBHWy2rJ3G170UUADAcmT7Ksd3rC4GRp_E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>934406748528</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.squip</string>
+	<key>PROJECT_ID</key>
+	<string>squip0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>squip0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:934406748528:ios:f11a6d6ba54541c72137b5</string>
+</dict>
+</plist>
