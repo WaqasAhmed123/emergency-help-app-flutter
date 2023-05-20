@@ -1,10 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:squip/models/user_model.dart';
 import 'package:stacked/stacked.dart';
 
 class RequestViewModel extends BaseViewModel {
   Object? selectedService;
   Object? selectedServiceincident;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>(); //handling fields
+
   Map<String, List<String>> servicesList = {
     "Ambulance": [
       "Medical Emergency",
@@ -24,14 +27,14 @@ class RequestViewModel extends BaseViewModel {
   };
 
   Function(Object) onchangeServiceoption() {
-    return (Object value) {
+    return (Object? value) {
       selectedService = value;
       rebuildUi();
     };
   }
 
   Function(Object) onchangeIncident() {
-    return (Object value) {
+    return (Object? value) {
       selectedServiceincident = value;
       rebuildUi();
     };

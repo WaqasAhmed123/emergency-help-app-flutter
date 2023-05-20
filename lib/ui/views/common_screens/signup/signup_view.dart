@@ -8,36 +8,45 @@ import 'signup_viewmodel.dart';
 class SignupView extends StackedView<SignupViewModel> {
   bool isUser;
   SignupView({Key? key, this.isUser = false}) : super(key: key);
-
   @override
   Widget builder(
     BuildContext context,
     SignupViewModel viewModel,
     Widget? child,
   ) {
+    var heightSize = MediaQuery.of(context).size.height;
+    var widthSize = MediaQuery.of(context).size.width;
     viewModel.isUser = isUser;
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
         body: SingleChildScrollView(
+          // reverse: true,
           child: Container(
-            height: MediaQuery.of(context).size.height * 1,
-            width: MediaQuery.of(context).size.width * 1,
-            padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+            // height: MediaQuery.of(context).size.height * 1,
+            // width: MediaQuery.of(context).size.width * 1,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              SizedBox(
+                width: widthSize * 1,
+                height: heightSize * 0.3,
+                child: Image.asset(
+                  'assets/signup.png',
+                  fit: BoxFit.fitHeight, // Adjust the fit as per your needs
+                ),
+              ),
               Text(
                 "Be the part of community",
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Text(
-                "SignUp$isUser",
+                "SignUp",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Form(
@@ -45,6 +54,8 @@ class SignupView extends StackedView<SignupViewModel> {
                 child: Container(
                   // height: 100,
                   child: ListView.builder(
+                    // physics: NeverScrollableScrollPhysics(),
+                    physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: isUser == true
                         ? 3
@@ -60,7 +71,7 @@ class SignupView extends StackedView<SignupViewModel> {
                                 value: key,
                                 child: Text(
                                   key,
-                                  style: TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               );
                             }).toList(),
@@ -84,8 +95,10 @@ class SignupView extends StackedView<SignupViewModel> {
                     onTap: () {
                       if (viewModel.formKey.currentState!.validate()) {
                         viewModel.signupWithEmail(
-                            email:
-                                viewModel.fieldsNames.values.elementAt(1).text.trim(),
+                            email: viewModel.fieldsNames.values
+                                .elementAt(1)
+                                .text
+                                .trim(),
                             password:
                                 viewModel.fieldsNames.values.elementAt(2).text);
                       }

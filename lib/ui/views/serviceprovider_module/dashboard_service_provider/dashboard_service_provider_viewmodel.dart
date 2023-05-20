@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:squip/models/serviceprovider_model.dart';
 import 'package:squip/services/custom_navigation.dart';
 import 'package:stacked/stacked.dart';
@@ -14,9 +16,25 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   final NavigationService _navigationService = locator<NavigationService>();
   final CustomNavigationService _customNavigationServiceService =
       locator<CustomNavigationService>();
+  String? serviceproviderImage;
+
+  // getImage()
+  // if(ServiceProviderModel.currentServiceProvider.service==){
+
+  // }
+  Widget buildMarquee(context) {
+    return Marquee(
+      text: "Slide Right to Accept And Left to Decline the Request",
+      style: Theme.of(context).textTheme.bodyLarge,
+      velocity: 50.0,
+      blankSpace: 50,
+      pauseAfterRound: Duration(seconds: 1),
+    );
+  }
 
   navigateToLogin() async {
-    return _customNavigationServiceService.navigateToLoginFromSignout();
+    return _customNavigationServiceService.navigateToLoginFromSignout(
+        key: "serviceProviderId");
   }
 
   void navigateToServiceproviderMap({destinationLocation}) {
@@ -35,13 +53,23 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   //   return service;
   // }
 
-  getData() {
+  (Stream<QuerySnapshot>, String imagePath) getData() {
+    String? imagePath;
     Stream<QuerySnapshot> collectionReference = FirebaseFirestore.instance
         .collection('requests')
         .where("to",
             isEqualTo: ServiceProviderModel.currentServiceProvider.service)
         .snapshots();
-    return collectionReference;
+    if (ServiceProviderModel.currentServiceProvider.service == 'police') {
+      imagePath = 'assets/police_pic.jpg';
+    } else if (ServiceProviderModel.currentServiceProvider.service ==
+        'firebrigade') {
+      imagePath = 'assets/firebrigade_pic.jpg';
+    }
+    else if (ServiceProviderModel.currentServiceProvider.service == 'ambulance') {
+      imagePath = 'assets/ambulance_pic.jpg';
+    }
+    return (collectionReference, imagePath!);
   }
 
   deleteRequest(String id) async {

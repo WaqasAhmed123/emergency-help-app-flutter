@@ -15,7 +15,7 @@ final CustomNavigationService _customNavigationServiceService =
   void navigateToRequest() => _navigationService.navigateToRequestView();
 
   navigateToLogin() async {
-    return _customNavigationServiceService.navigateToLoginFromSignout();
+    return _customNavigationServiceService.navigateToLoginFromSignout(key:"userId");
   }
 
   //map variables

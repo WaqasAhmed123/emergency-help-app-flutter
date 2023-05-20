@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:squip/app/app.bottomsheets.dart';
 import 'package:squip/app/app.dialogs.dart';
+import 'package:squip/app/app.router.dart';
 import 'package:squip/models/serviceprovider_model.dart';
 import 'package:squip/models/user_model.dart';
-import 'package:squip/app/app.router.dart';
-import 'package:squip/ui/common/app_colors.dart';
-import 'package:squip/ui/views/common_screens/startup/startup_view.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import 'app/app.locator.dart';
@@ -41,6 +39,7 @@ void main() async {
   runApp(MyApp(initialRoute: initialRoute));
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   String initialRoute;
   MyApp({required this.initialRoute});
@@ -59,18 +58,19 @@ class MyApp extends StatelessWidget {
       900: Color.fromRGBO(50, 205, 48, 1),
     };
 
-
     return MaterialApp(
+
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          backgroundColor: Colors.white,
+        scaffoldBackgroundColor: Colors.white,
+          // backgroundColor: Colors.white,
           primaryColor: Color(0XFF32CD30),
           primarySwatch: const MaterialColor(0XFF32CD30, color),
           // focusColor: kcPrimaryColor,
           textTheme: const TextTheme(
             titleLarge: TextStyle(
-                fontSize: 40, fontWeight: FontWeight.w900, color: Colors.black),
+                fontSize: 30, fontWeight: FontWeight.w900, color: Colors.black),
             titleMedium: TextStyle(
                 fontSize: 18, fontWeight: FontWeight.w900, color: Colors.black),
             titleSmall: TextStyle(
@@ -79,6 +79,7 @@ class MyApp extends StatelessWidget {
                 fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white),
           )),
 
+      // initialRoute: Routes.dashboardServiceProviderView,
       initialRoute: initialRoute,
       // initialRoute: Routes.homeView,
       onGenerateRoute: StackedRouter().onGenerateRoute,

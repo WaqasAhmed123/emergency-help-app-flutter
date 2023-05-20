@@ -8,12 +8,15 @@ import '../../../../models/user_model.dart';
 import 'home_viewmodel.dart';
 
 class HomeView extends StackedView<HomeViewModel> {
+  const HomeView({super.key});
+
   @override
   onViewModelReady(HomeViewModel viewModel) async {
     viewModel.currentLocation = await viewModel.getCurrentLocation();
     super.onViewModelReady(viewModel);
   }
 
+  @override
   Widget builder(
     BuildContext context,
     HomeViewModel viewModel,
@@ -31,10 +34,26 @@ class HomeView extends StackedView<HomeViewModel> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Center(
+                      child: CircleAvatar(
+                        radius: 80,
+                        child: Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 80,
+                        ),
+                      ),
+                    ),
                     ListTile(title: Text("${UserModel.currentUser.name}")),
-                    IconButton(
-                        onPressed: () => viewModel.navigateToLogin(),
-                        icon: Icon(Icons.logout))
+                    InkWell(
+                      onTap: () => viewModel.navigateToLogin(),
+                      child: ListTile(
+                        title: Text("Logout"),
+                        trailing: IconButton(
+                            onPressed: () => viewModel.navigateToLogin(),
+                            icon: const Icon(Icons.logout)),
+                      ),
+                    )
                   ],
                 ),
               ),
