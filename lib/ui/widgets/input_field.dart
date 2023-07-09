@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-inputField({
-  controller,
-  hintText,
-}) {
+inputField(
+    {controller,
+    hintText,
+    obscureText = false,
+    suffixIconVisible = false,
+    onPressed = null}) {
   return Container(
     height: 54,
     margin: EdgeInsets.symmetric(vertical: 4, horizontal: 5),
@@ -33,7 +35,18 @@ inputField({
       },
       controller: controller,
       autofocus: false,
+      obscureText: obscureText,
       decoration: InputDecoration(
+        suffixIcon: suffixIconVisible == true
+            ? IconButton(
+                splashColor: Colors.transparent,
+                onPressed: onPressed,
+                icon: Icon(
+                  obscureText ? Icons.visibility : Icons.visibility_off,
+                  color: Colors.green,
+                ),
+              )
+            : null,
         filled: true,
         fillColor: Color(0xffffffff),
         border: OutlineInputBorder(

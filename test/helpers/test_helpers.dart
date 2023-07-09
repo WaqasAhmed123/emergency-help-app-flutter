@@ -6,7 +6,6 @@ import 'package:stacked_services/stacked_services.dart';
 import 'package:squip/services/custom_navigation.dart';
 
 import 'test_helpers.mocks.dart';
-import 'package:squip/services/datastorage_service.dart';
 // @stacked-import
 
 @GenerateMocks([], customMocks: [
@@ -14,7 +13,7 @@ import 'package:squip/services/datastorage_service.dart';
   MockSpec<BottomSheetService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<DialogService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<CustomNavigationService>(onMissingStub: OnMissingStub.returnDefault),
-  MockSpec<DatastorageService>(onMissingStub: OnMissingStub.returnDefault),
+  // MockSpec<DatastorageService>(onMissingStub: OnMissingStub.returnDefault),
 // @stacked-mock-spec
 ])
 void registerServices() {
@@ -22,7 +21,7 @@ void registerServices() {
   getAndRegisterBottomSheetService();
   getAndRegisterDialogService();
   getAndRegisterCustomNavigationService();
-  getAndRegisterDatastorageService();
+  // getAndRegisterDatastorageService();
 // @stacked-mock-register
 }
 
@@ -83,12 +82,12 @@ MockCustomNavigationService getAndRegisterCustomNavigationService() {
   return service;
 }
 
-MockDatastorageService getAndRegisterDatastorageService() {
-  _removeRegistrationIfExists<DatastorageService>();
-  final service = MockDatastorageService();
-  locator.registerSingleton<DatastorageService>(service);
-  return service;
-}
+// MockDatastorageService getAndRegisterDatastorageService() {
+//   // _removeRegistrationIfExists<DatastorageService>();
+//   // final service = MockDatastorageService();
+//   // locator.registerSingleton<DatastorageService>(service);
+//   return service;
+// }
 // @stacked-mock-create
 
 void _removeRegistrationIfExists<T extends Object>() {

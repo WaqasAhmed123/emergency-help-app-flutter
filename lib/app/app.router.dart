@@ -121,13 +121,13 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i5.HomeView: (data) {
       return _i10.MaterialPageRoute<dynamic>(
-        builder: (context) => _i5.HomeView(),
+        builder: (context) => const _i5.HomeView(),
         settings: data,
       );
     },
     _i6.DashboardServiceProviderView: (data) {
       return _i10.MaterialPageRoute<dynamic>(
-        builder: (context) => _i6.DashboardServiceProviderView(),
+        builder: (context) => const _i6.DashboardServiceProviderView(),
         settings: data,
       );
     },
@@ -141,7 +141,7 @@ class StackedRouter extends _i1.RouterBase {
     },
     _i8.RequestView: (data) {
       return _i10.MaterialPageRoute<dynamic>(
-        builder: (context) => _i8.RequestView(),
+        builder: (context) => const _i8.RequestView(),
         settings: data,
       );
     },

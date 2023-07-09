@@ -1,5 +1,4 @@
 import 'package:squip/services/custom_navigation.dart';
-import 'package:squip/services/datastorage_service.dart';
 import 'package:squip/ui/bottom_sheets/notice/notice_sheet.dart';
 import 'package:squip/ui/dialogs/info_alert/info_alert_dialog.dart';
 import 'package:squip/ui/views/common_screens/login/login_view.dart';
@@ -25,7 +24,7 @@ import '../ui/views/common_screens/splash/splash_view.dart';
     MaterialRoute(page: DashboardServiceProviderView),
     MaterialRoute(page: ServiceprovidermapView),
     MaterialRoute(page: RequestView),
-MaterialRoute(page: SplashView),
+    MaterialRoute(page: SplashView),
 // @stacked-route
   ],
   dependencies: [
@@ -33,7 +32,7 @@ MaterialRoute(page: SplashView),
     LazySingleton(classType: DialogService),
     LazySingleton(classType: NavigationService),
     LazySingleton(classType: CustomNavigationService),
-    LazySingleton(classType: DatastorageService),
+    // LazySingleton(classType: DatastorageService),
 // @stacked-service
   ],
   bottomsheets: [

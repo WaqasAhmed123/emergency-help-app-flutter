@@ -25,7 +25,9 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   Widget buildMarquee(context) {
     return Marquee(
       text: "Slide Right to Accept And Left to Decline the Request",
-      style: Theme.of(context).textTheme.bodyLarge,
+      style: TextStyle(color: Colors.red, fontSize: 16),
+      // style: Theme.of(context).textTheme.bodyLarge,
+
       velocity: 50.0,
       blankSpace: 50,
       pauseAfterRound: Duration(seconds: 1),
@@ -65,8 +67,8 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
     } else if (ServiceProviderModel.currentServiceProvider.service ==
         'firebrigade') {
       imagePath = 'assets/firebrigade_pic.jpg';
-    }
-    else if (ServiceProviderModel.currentServiceProvider.service == 'ambulance') {
+    } else if (ServiceProviderModel.currentServiceProvider.service ==
+        'ambulance') {
       imagePath = 'assets/ambulance_pic.jpg';
     }
     return (collectionReference, imagePath!);

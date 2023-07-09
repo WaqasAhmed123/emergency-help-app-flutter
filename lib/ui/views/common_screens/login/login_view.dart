@@ -5,10 +5,15 @@ import 'package:stacked/stacked.dart';
 import '../../../widgets/container_button.dart';
 import 'login_viewmodel.dart';
 
+// ignore: must_be_immutable
 class LoginView extends StackedView<LoginViewModel> {
   bool isUser;
+  // bool obscureText = true;
 
-  LoginView({Key? key, this.isUser = false}) : super(key: key);
+  LoginView({
+    Key? key,
+    this.isUser = false,
+  }) : super(key: key);
 
   @override
   Widget builder(
@@ -22,16 +27,16 @@ class LoginView extends StackedView<LoginViewModel> {
         // backgroundColor: Theme.of(context).colorScheme.background,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-            reverse: true,
+            // reverse: true,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal:16),
-              child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Container(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 1,
-                  height:MediaQuery.of(context).size.height * 0.4 ,
+                  height: MediaQuery.of(context).size.height * 0.4,
                   child: Image.asset(
                     'assets/login.png',
                     fit: BoxFit.cover, // Adjust the fit as per your needs
@@ -67,7 +72,10 @@ class LoginView extends StackedView<LoginViewModel> {
                         ),
                         inputField(
                             controller: viewModel.passwordController,
-                            hintText: "Password"),
+                            hintText: "Password",
+                            obscureText: viewModel.obscureText,
+                            suffixIconVisible: true,
+                            onPressed: () => viewModel.togglePassword()),
                         const SizedBox(
                           height: 10,
                         ),
@@ -95,12 +103,13 @@ class LoginView extends StackedView<LoginViewModel> {
                         onPressed: () => viewModel.navigateToSignUp(),
                         child: Text(
                           "Register Now!",
-                          style: TextStyle(color: Theme.of(context).primaryColor),
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
                         ))
                   ],
                 )
               ])),
-            )),
+        )),
       ),
     );
   }

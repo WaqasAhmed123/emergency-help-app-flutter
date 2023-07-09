@@ -9,7 +9,6 @@ import 'dart:ui' as _i5;
 import 'package:flutter/material.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:squip/services/custom_navigation.dart' as _i6;
-import 'package:squip/services/datastorage_service.dart' as _i7;
 import 'package:stacked_services/stacked_services.dart' as _i2;
 
 // ignore_for_file: type=lint
@@ -647,5 +646,5 @@ class MockCustomNavigationService extends _i1.Mock
 /// A class which mocks [DatastorageService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDatastorageService extends _i1.Mock
-    implements _i7.DatastorageService {}
+// class MockDatastorageService extends _i1.Mock
+//     implements _i7.DatastorageService {}

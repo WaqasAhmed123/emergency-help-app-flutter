@@ -11,6 +11,15 @@ import '../../../../app/app.router.dart';
 
 class LoginViewModel extends BaseViewModel {
   bool? isUser;
+  bool obscureText = true;
+
+  // LoginViewModel(this.obscureText);
+  togglePassword() {
+    obscureText = !obscureText;
+    // notifyListeners();
+    rebuildUi();
+  }
+
   saveIdInSharedPreference(String module, String id) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(module, id);
@@ -77,7 +86,6 @@ class LoginViewModel extends BaseViewModel {
         await saveIdInSharedPreference("userId", currentuserId!);
         await UserModel.currentUser.getDataFromFirebase();
 
-        
         navigateToHome();
         setBusy(false);
         rebuildUi();
@@ -86,7 +94,7 @@ class LoginViewModel extends BaseViewModel {
         isUserModule = false;
         await saveIdInSharedPreference("serviceProviderId", currentuserId!);
         await ServiceProviderModel.currentServiceProvider.getDataFromFirebase();
-        
+
         navigateToServiceDashboard();
         setBusy(false);
         rebuildUi();

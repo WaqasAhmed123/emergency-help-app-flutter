@@ -68,7 +68,7 @@ class DashboardServiceProviderView
           appBar: AppBar(
             title: const Text(
               "Help Requests",
-              style: TextStyle(fontSize: 10),
+              style: TextStyle(fontSize: 20),
             ),
           ),
           body: Container(

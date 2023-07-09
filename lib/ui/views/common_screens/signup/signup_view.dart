@@ -5,6 +5,7 @@ import '../../../widgets/input_field.dart';
 import '../../../widgets/container_button.dart';
 import 'signup_viewmodel.dart';
 
+// ignore: must_be_immutable
 class SignupView extends StackedView<SignupViewModel> {
   bool isUser;
   SignupView({Key? key, this.isUser = false}) : super(key: key);
@@ -77,7 +78,15 @@ class SignupView extends StackedView<SignupViewModel> {
                             }).toList(),
                             onChanged: viewModel.onChanged());
                       } else {
+                        bool isPasswordKey =
+                            viewModel.fieldsNames.keys.elementAt(index) ==
+                                "Password";
                         return inputField(
+                            obscureText:
+                                isPasswordKey ? viewModel.obscureText : false,
+                            suffixIconVisible: isPasswordKey,
+                            onPressed:
+                                isPasswordKey ? viewModel.togglePassword : null,
                             controller:
                                 viewModel.fieldsNames.values.elementAt(index),
                             hintText:

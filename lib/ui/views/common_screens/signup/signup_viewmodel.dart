@@ -9,6 +9,12 @@ import '../../../../app/app.router.dart';
 
 class SignupViewModel extends BaseViewModel {
   bool? isUser; //check whether its user or service provider
+  bool obscureText = true;
+  togglePassword() {
+    obscureText = !obscureText;
+    // notifyListeners();
+    rebuildUi();
+  }
 
 //services
   final NavigationService _navigationService = locator<NavigationService>();
