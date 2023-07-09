@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:squip/models/serviceprovider_model.dart';
@@ -25,12 +24,12 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   Widget buildMarquee(context) {
     return Marquee(
       text: "Slide Right to Accept And Left to Decline the Request",
-      style: TextStyle(color: Colors.red, fontSize: 16),
+      style: const TextStyle(color: Colors.red, fontSize: 16),
       // style: Theme.of(context).textTheme.bodyLarge,
 
       velocity: 50.0,
       blankSpace: 50,
-      pauseAfterRound: Duration(seconds: 1),
+      pauseAfterRound: const Duration(seconds: 1),
     );
   }
 
