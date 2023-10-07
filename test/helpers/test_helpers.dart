@@ -12,7 +12,7 @@ import 'test_helpers.mocks.dart';
   MockSpec<NavigationService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<BottomSheetService>(onMissingStub: OnMissingStub.returnDefault),
   MockSpec<DialogService>(onMissingStub: OnMissingStub.returnDefault),
-  MockSpec<CustomNavigationService>(onMissingStub: OnMissingStub.returnDefault),
+  MockSpec<CommonFunctionsService>(onMissingStub: OnMissingStub.returnDefault),
   // MockSpec<DatastorageService>(onMissingStub: OnMissingStub.returnDefault),
 // @stacked-mock-spec
 ])
@@ -20,7 +20,7 @@ void registerServices() {
   getAndRegisterNavigationService();
   getAndRegisterBottomSheetService();
   getAndRegisterDialogService();
-  getAndRegisterCustomNavigationService();
+  getAndRegisterCommonFunctionsService();
   // getAndRegisterDatastorageService();
 // @stacked-mock-register
 }
@@ -75,10 +75,10 @@ MockDialogService getAndRegisterDialogService() {
   return service;
 }
 
-MockCustomNavigationService getAndRegisterCustomNavigationService() {
-  _removeRegistrationIfExists<CustomNavigationService>();
-  final service = MockCustomNavigationService();
-  locator.registerSingleton<CustomNavigationService>(service);
+MockCommonFunctionsService getAndRegisterCommonFunctionsService() {
+  _removeRegistrationIfExists<CommonFunctionsService>();
+  final service = MockCommonFunctionsService();
+  locator.registerSingleton<CommonFunctionsService>(service);
   return service;
 }
 

@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:squip/models/serviceprovider_model.dart';
 import 'package:stacked/stacked.dart';
+
 import 'dashboard_service_provider_viewmodel.dart';
-import 'package:marquee/marquee.dart';
 
 class DashboardServiceProviderView
     extends StackedView<DashboardServiceProviderViewModel> {
@@ -13,7 +13,8 @@ class DashboardServiceProviderView
 
   @override
   onViewModelReady(DashboardServiceProviderViewModel viewModel) async {
-    viewModel.getData();
+    viewModel.getImage();
+    viewModel.getRequests();
     super.onViewModelReady(viewModel);
   }
 
@@ -37,29 +38,35 @@ class DashboardServiceProviderView
                   children: [
                     ListTile(
                         title: Text(
-                      ServiceProviderModel.currentServiceProvider.service!
-                          .toUpperCase(),
+                      ServiceProviderModel.service!.toUpperCase(),
                       style: Theme.of(context).textTheme.titleLarge,
                     )),
-                    Center(
-                        child: CircleAvatar(
-                      radius: 80,
-
-                      backgroundColor: Colors.transparent,
-                      child: ClipOval(
-                        child: Image.asset(viewModel.getData().$2),
-                      ),
-                      // backgroundImage: AssetImage(viewModel.getData().$2)
-                    )),
-                    ListTile(
-                        title: Text(
-                            "${ServiceProviderModel.currentServiceProvider.name}")),
+                    ListTile(title: Text("${ServiceProviderModel.name}")),
+                    InkWell(
+                        onTap: () =>
+                            viewModel.navigateToServiceproviderReviews(),
+                        child: const ListTile(title: Text("Reviews"))),
                     ListTile(
                       title: const Text("Logout"),
                       trailing: IconButton(
                           onPressed: () => viewModel.navigateToLogin(),
                           icon: const Icon(Icons.logout)),
                     ),
+                    InkWell(
+                      onTap: () => viewModel.deleteAccount(),
+                      child: ListTile(
+                        title: const Text(
+                          "Delete Account",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        trailing: IconButton(
+                            onPressed: () => viewModel.deleteAccount(),
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -74,12 +81,8 @@ class DashboardServiceProviderView
           body: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(children: [
-                SizedBox(
-                  height: 50,
-                  child: viewModel.buildMarquee(context),
-                ),
-                StreamBuilder(
-                    stream: viewModel.getData().$1,
+                FutureBuilder(
+                    future: viewModel.getRequests(),
                     builder: (BuildContext context,
                         AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -105,49 +108,145 @@ class DashboardServiceProviderView
                             itemCount: snapshot.data!.docs.length,
                             itemBuilder: (context, index) {
                               final document = snapshot.data!.docs[index];
-
-                              return Dismissible(
-                                key: UniqueKey(),
-                                direction: DismissDirection.horizontal,
-                                onDismissed: (direction) {
-                                  if (direction ==
-                                      DismissDirection.endToStart) {
-                                    viewModel.deleteRequest(document.id);
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Request Declined'),
-                                        duration: Duration(seconds: 2),
+                              return Card(
+                                elevation: 4,
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        document["byName"],
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text('Request Accepted'),
-                                        duration: Duration(seconds: 2),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        document['incident'],
+                                        style: const TextStyle(fontSize: 16),
                                       ),
-                                    );
-                                    viewModel.navigateToServiceproviderMap(
-                                        destinationLocation: LatLng(
-                                            (document["location latitude"]),
-                                            (document["location longitude"])));
-                                  }
-                                },
-                                background: Container(
-                                  alignment: Alignment.centerLeft,
-                                  color: Colors.green,
-                                  child: const Icon(Icons.check),
-                                ),
-                                secondaryBackground: Container(
-                                  alignment: Alignment.centerRight,
-                                  color: Colors.red,
-                                  child: const Icon(Icons.delete),
-                                ),
-                                child: ListTile(
-                                  title: Text(document["by name"]),
-                                  subtitle: Text(document['incident']),
-                                  // trailing: Text(document['timestamp'].toString()),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        document['status'],
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.grey),
+                                      ),
+                                      ButtonBar(
+                                        alignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () async {
+                                              await viewModel.deleteRequest(
+                                                  id: document.id,
+                                                  collection: "requests");
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content:
+                                                      Text('Request Canceled'),
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                ),
+                                              );
+                                            },
+                                            child: const Text(
+                                              'Decline',
+                                              style:
+                                                  TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                          TextButton(
+                                              onPressed: () async {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  const SnackBar(
+                                                    content: Text(
+                                                        'Request Accepted'),
+                                                    duration:
+                                                        Duration(seconds: 2),
+                                                  ),
+                                                );
+                                                await viewModel
+                                                    .updateRequestStatus(
+                                                        document.id);
+                                                viewModel
+                                                    .navigateToServiceproviderMap(
+                                                        destinationLocation:
+                                                            LatLng(
+                                                  (document[
+                                                      "locationLatitude"]),
+                                                  (document[
+                                                      "locationLongitude"]),
+                                                ));
+                                              },
+                                              //   showReviewDialog(
+                                              //       context: context,
+                                              //       spId: document['spId']);
+                                              // },
+                                              child: const Text(
+                                                'Accept',
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ))
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
+
+                              // return Dismissible(
+                              //   key: UniqueKey(),
+                              //   direction: DismissDirection.horizontal,
+                              //   onDismissed: (direction) async {
+                              //     if (direction ==
+                              //         DismissDirection.endToStart) {
+                              //       viewModel.deleteRequest(document.id);
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         const SnackBar(
+                              //           content: Text('Request Declined'),
+                              //           duration: Duration(seconds: 2),
+                              //         ),
+                              //       );
+                              //     } else {
+                              //       ScaffoldMessenger.of(context).showSnackBar(
+                              //         const SnackBar(
+                              //           content: Text('Request Accepted'),
+                              //           duration: Duration(seconds: 2),
+                              //         ),
+                              //       );
+                              //       await viewModel
+                              //           .updateRequestStatus(document.id);
+                              //       viewModel.navigateToServiceproviderMap(
+                              //           destinationLocation: LatLng(
+                              //         (document["locationLatitude"]),
+                              //         (document["locationLongitude"]),
+                              //       ));
+                              //     }
+                              //   },
+                              //   background: Container(
+                              //     alignment: Alignment.centerLeft,
+                              //     color: Colors.green,
+                              //     child: const Icon(Icons.check),
+                              //   ),
+                              //   secondaryBackground: Container(
+                              //     alignment: Alignment.centerRight,
+                              //     color: Colors.red,
+                              //     child: const Icon(Icons.delete),
+                              //   ),
+                              //   child: ListTile(
+                              //     title: Text(document["byName"]),
+                              //     subtitle: Text(document['incident']),
+                              //     trailing: Text(document['status']),
+                              //     // trailing: Text(document['timestamp'].toString()),
+                              //   ),
+                              // );
                             });
                       }
                     }),

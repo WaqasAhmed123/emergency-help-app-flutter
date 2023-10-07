@@ -12,7 +12,10 @@ class HomeView extends StackedView<HomeViewModel> {
 
   @override
   onViewModelReady(HomeViewModel viewModel) async {
+    print(viewModel.currentLocation.runtimeType);
     viewModel.currentLocation = await viewModel.getCurrentLocation();
+     viewModel.fetchLocationsFromFirestore();
+    print("updatd location ${viewModel.currentLocation.runtimeType} ");
     super.onViewModelReady(viewModel);
   }
 
@@ -44,14 +47,35 @@ class HomeView extends StackedView<HomeViewModel> {
                         ),
                       ),
                     ),
-                    ListTile(title: Text("${UserModel.currentUser.name}")),
+                    ListTile(title: Text("${UserModel.name}")),
+                    InkWell(
+                        onTap: () => viewModel.navigateToAllrequests(),
+                        child: const ListTile(
+                            title: Text(
+                          "All Requests",
+                        ))),
                     InkWell(
                       onTap: () => viewModel.navigateToLogin(),
                       child: ListTile(
-                        title: Text("Logout"),
+                        title: const Text("Logout"),
                         trailing: IconButton(
                             onPressed: () => viewModel.navigateToLogin(),
                             icon: const Icon(Icons.logout)),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => viewModel.deleteAccount(),
+                      child: ListTile(
+                        title: const Text(
+                          "Delete Account",
+                          style: TextStyle(color: Colors.red),
+                        ),
+                        trailing: IconButton(
+                            onPressed: () => viewModel.deleteAccount(),
+                            icon: const Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            )),
                       ),
                     )
                   ],
@@ -69,7 +93,7 @@ class HomeView extends StackedView<HomeViewModel> {
                   CameraPosition(zoom: 15, target: viewModel.currentLocation),
               myLocationButtonEnabled: true,
               myLocationEnabled: true,
-              markers: Set<Marker>.of(viewModel.markers.values),
+              markers: Set<Marker>.of(viewModel.markersNew.values),
               // {
               //   viewModel.markers
               // // Marker(markerId: MarkerId("police"),

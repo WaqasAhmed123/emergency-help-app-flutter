@@ -27,6 +27,8 @@ class StartupView extends StackedView<StartupViewModel> {
                 context: context,
                 onTap: () {
                   viewModel.isUser = true;
+                  viewModel.isHospital = false;
+
                   viewModel.navigateToLogin();
                 }),
             const SizedBox(
@@ -37,8 +39,21 @@ class StartupView extends StackedView<StartupViewModel> {
                 context: context,
                 onTap: () {
                   viewModel.isUser = false;
+                  viewModel.isHospital = false;
+
                   viewModel.navigateToLogin();
                 }),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // containerButton(
+            //     text: "Register Hospital",
+            //     context: context,
+            //     onTap: () {
+            //       viewModel.isUser = false;
+            //       viewModel.isHospital = true;
+            //       viewModel.navigateToLogin();
+            //     }),
           ],
         ),
       ),

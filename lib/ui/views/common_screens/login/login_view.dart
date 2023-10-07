@@ -8,12 +8,11 @@ import 'login_viewmodel.dart';
 // ignore: must_be_immutable
 class LoginView extends StackedView<LoginViewModel> {
   bool isUser;
+  bool isHospital;
   // bool obscureText = true;
 
-  LoginView({
-    Key? key,
-    this.isUser = false,
-  }) : super(key: key);
+  LoginView({Key? key, this.isUser = false, this.isHospital = false})
+      : super(key: key);
 
   @override
   Widget builder(
@@ -22,6 +21,7 @@ class LoginView extends StackedView<LoginViewModel> {
     Widget? child,
   ) {
     viewModel.isUser = isUser;
+    viewModel.isHospital = isHospital;
     return SafeArea(
       child: Scaffold(
         // backgroundColor: Theme.of(context).colorScheme.background,

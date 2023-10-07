@@ -11,6 +11,7 @@ import '../../../../app/app.router.dart';
 
 class LoginViewModel extends BaseViewModel {
   bool? isUser;
+  bool? isHospital;
   bool obscureText = true;
 
   // LoginViewModel(this.obscureText);
@@ -29,22 +30,28 @@ class LoginViewModel extends BaseViewModel {
   String? currentuserId = FirebaseAuth.instance.currentUser?.uid;
 
   Future<bool> isUserExistsInUsersCollection() async {
-    final userRef = FirebaseFirestore.instance.collection('users');
+    final userRef = FirebaseFirestore.instance.collection('user');
     DocumentSnapshot documentSnapshot = await userRef.doc(currentuserId).get();
     return documentSnapshot.exists;
-  }
-
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
-    final userRef = FirebaseFirestore.instance.collection('users');
-    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await userRef.doc(currentuserId).get();
-    return documentSnapshot;
   }
 
   Future<bool> isServiceProviderExistsInCollection() async {
     final userRef = FirebaseFirestore.instance.collection('service provider');
     DocumentSnapshot documentSnapshot = await userRef.doc(currentuserId).get();
     return documentSnapshot.exists;
+  }
+
+  Future<bool> isHospitalExistsInCollection() async {
+    final userRef = FirebaseFirestore.instance.collection('hospital');
+    DocumentSnapshot documentSnapshot = await userRef.doc(currentuserId).get();
+    return documentSnapshot.exists;
+  }
+
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserData() async {
+    final userRef = FirebaseFirestore.instance.collection('user');
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await userRef.doc(currentuserId).get();
+    return documentSnapshot;
   }
 
 //services
@@ -60,8 +67,8 @@ class LoginViewModel extends BaseViewModel {
   get currentState => null;
   void setModelBusy() {}
 
-  void navigateToSignUp() =>
-      _navigationService.navigateToSignupView(isUser: isUser!);
+  void navigateToSignUp() => _navigationService.navigateToSignupView(
+      isUser: isUser!, isHospital: isHospital!);
 
   void navigateToHome() => _navigationService.replaceWithHomeView();
   // void navigateToHome() => _navigationService.navigateTo(Routes.homeView);
@@ -75,6 +82,7 @@ class LoginViewModel extends BaseViewModel {
   Future loginWithEmail({String? email, String? password}) async {
     setBusy(true);
     bool isUserModule = false;
+    bool isHospital = false;
 
     try {
       final credential = await FirebaseAuth.instance
@@ -84,7 +92,7 @@ class LoginViewModel extends BaseViewModel {
       if (await isUserExistsInUsersCollection() == true && isUser == true) {
         isUserModule = true;
         await saveIdInSharedPreference("userId", currentuserId!);
-        await UserModel.currentUser.getDataFromFirebase();
+        await UserModel.getDataFromFirebase();
 
         navigateToHome();
         setBusy(false);
@@ -93,14 +101,28 @@ class LoginViewModel extends BaseViewModel {
           isUser == false) {
         isUserModule = false;
         await saveIdInSharedPreference("serviceProviderId", currentuserId!);
-        await ServiceProviderModel.currentServiceProvider.getDataFromFirebase();
+        await ServiceProviderModel.getDataFromFirebase();
 
         navigateToServiceDashboard();
         setBusy(false);
         rebuildUi();
-      } else if (isUserModule == true) {
+      }
+      //  else if (await isHospitalExistsInCollection() == true &&
+      //     isUserModule == false) {
+      //   // isUserModule = false;
+      //   isHospital = true;
+      //   await saveIdInSharedPreference("hospitalId", currentuserId!);
+      //   await HospitalModel.getDataFromFirebase();
+
+      //   navigateToServiceDashboard();
+      //   setBusy(false);
+      //   rebuildUi();
+      // }
+       else if (isUserModule == true && isHospital == false) {
         _dialogService.showDialog(title: "User doesn't exist in user module");
-      } else if (isUserModule == false) {
+      } else if (isUserModule == false && isHospital == true) {
+        _dialogService.showDialog(title: "Hospital doesn't exist");
+      } else if (isUserModule == false && isHospital == false) {
         _dialogService.showDialog(
             title: "Service Provider doesn't exist in Service Provider module");
       }

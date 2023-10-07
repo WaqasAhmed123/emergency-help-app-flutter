@@ -11,16 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 // }
 
 class UserModel {
-  static UserModel? _currentUser;
-  late String id;
-  String? name;
-  String? email;
-  LatLng? currentLocation;
+  static late String id;
+  static String? name;
+  static String? email;
+  static LatLng? currentLocation;
   // String? to;
   // String? incident;
-  String? locationLatitude;
-  String? locationLongitude;
-  UserModel._();
+  static double? locationLatitude;
+  static double? locationLongitude;
 
   // UserModel(
   //     {this.id,
@@ -40,36 +38,46 @@ class UserModel {
         'name': name,
       };
 
-  Map<String, dynamic> request({to, incident}) => {
-        'to': to,
+  static Future<Map<String, dynamic>> request(
+          {service, incident, spId}) async =>
+      {
+        // 'to': to,
+        "userId": await getIdFromSharedPreference(),
+        "spId": spId,
+        "requestedService": service,
         'incident': incident,
         'timestamp': DateTime.now(),
         // 'location': currentLocation as GeoPoint
-        'by name': currentUser.name,
-        'location latitude': currentLocation!.latitude,
-        'location longitude': currentLocation!.longitude
+        'byName': name,
+        'locationLatitude': currentLocation!.latitude,
+        'locationLongitude': currentLocation!.longitude,
+        'status': "pending"
+      };
+  static Future<Map<String, dynamic>> review(
+          {rating, description, spId}) async =>
+      {
+        // 'to': to,
+        "userId": await getIdFromSharedPreference(),
+        "spId": spId,
+        'rating': rating,
+        'description': description,
       };
 
-  getIdFromSharedPreference() async {
+  static getIdFromSharedPreference() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("userId")!;
   }
 
-  Future<void> getDataFromFirebase() async {
+  static Future getDataFromFirebase() async {
     print('Getting data from Firebase');
     id = await getIdFromSharedPreference();
 
-    final userRef = FirebaseFirestore.instance.collection('users');
+    final userRef = FirebaseFirestore.instance.collection('user');
     DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
         await userRef.doc(id).get();
     Map<String, dynamic> data = documentSnapshot.data()!;
-    if (_currentUser == null) {
-      _currentUser = UserModel._();
-    }
-    _currentUser!.name = data['name'];
-    _currentUser!.email = data['email'];
-
-    print('Current service provider: ${_currentUser}');
+    name = data['name'];
+    email = data['email'];
   }
 
   // factory UserModel.fromDocumentSnapshot(
@@ -81,12 +89,6 @@ class UserModel {
   //     email: data['email'],
   //   );
   // }
-
-  static UserModel get currentUser {
-    _currentUser ??= UserModel._();
-
-    return _currentUser!;
-  }
 
   // static set currentUser(UserModel user) {
   //   _currentUser = user;

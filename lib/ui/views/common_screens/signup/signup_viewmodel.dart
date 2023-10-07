@@ -9,6 +9,7 @@ import '../../../../app/app.router.dart';
 
 class SignupViewModel extends BaseViewModel {
   bool? isUser; //check whether its user or service provider
+  bool? isHospital; //check whether its user or service provider
   bool obscureText = true;
   togglePassword() {
     obscureText = !obscureText;
@@ -19,11 +20,16 @@ class SignupViewModel extends BaseViewModel {
 //services
   final NavigationService _navigationService = locator<NavigationService>();
   final DialogService _dialogService = locator<DialogService>();
-  CollectionReference _user = FirebaseFirestore.instance.collection('users');
-  CollectionReference _serviceProvider =
+  final CollectionReference _user =
+      FirebaseFirestore.instance.collection('user');
+  final CollectionReference _serviceProvider =
       FirebaseFirestore.instance.collection('service provider');
+  final CollectionReference _hospital =
+      FirebaseFirestore.instance.collection('hospital');
   //navigation
   void navigateToLogin() => _navigationService.navigateTo(Routes.loginView);
+
+  TextEditingController address = TextEditingController();
 
 //signup
   Future signupWithEmail({
@@ -38,7 +44,7 @@ class SignupViewModel extends BaseViewModel {
         password: password!,
       );
       String? userId = FirebaseAuth.instance.currentUser?.uid;
-      if (isUser == true) {
+      if (isUser == true && isHospital == false) {
         _user
             .doc(userId)
             .set({
@@ -48,9 +54,12 @@ class SignupViewModel extends BaseViewModel {
             })
             .then((value) => print("User Added"))
             .catchError((error) => print("Failed to add user: $error"));
-      } else if (isUser == false) {
+      } else if (isUser == false && isHospital == false) {
         addServices(userId: userId);
+      } else if (isUser == false && isHospital == true) {
+        addHospital(userId: userId);
       }
+
       setBusy(false);
       rebuildUi();
       _navigationService.replaceWithLoginView();
@@ -82,24 +91,56 @@ class SignupViewModel extends BaseViewModel {
   //fields
   Map<String, dynamic> fieldsNames = {
     "Name": TextEditingController(),
+    "Phone": TextEditingController(),
     "Email": TextEditingController(),
     "Password": TextEditingController(),
-    "Location Latitude": TextEditingController(),
-    "Location Longitude": TextEditingController(),
+    "locationLatitude": TextEditingController(),
+    "locationLongitude": TextEditingController(),
   };
 
   addServices({userId}) {
+    String latitudeText = fieldsNames["locationLatitude"].text;
+    String longitudeText = fieldsNames["locationLongitude"].text;
+    String contactText = fieldsNames["Phone"].text;
+    int? contact = int.tryParse(contactText);
+
+    double? latitude = double.tryParse(latitudeText);
+    double? longitude = double.tryParse(longitudeText);
     _serviceProvider
         .doc(userId)
         .set({
-          'id': userId,
-          'name': fieldsNames["Name"].text,
+          // 'id': userId,
           'email': fieldsNames["Email"].text,
+          'name': fieldsNames["Name"].text,
+          "contact": contact,
           "service": selectedOption.toString().toLowerCase(),
-          'location latitude': fieldsNames["Location Latitude"].text,
-          'location longitude': fieldsNames["Location Longitude"].text,
+          'locationLatitude': latitude,
+          'locationLongitude': longitude,
         })
         .then((value) => print("User Added"))
+        .catchError((error) => print("Failed to add user: $error"));
+  }
+
+  addHospital({userId}) {
+    String latitudeText = fieldsNames["locationLatitude"].text;
+    String longitudeText = fieldsNames["locationLongitude"].text;
+    String contactText = fieldsNames["Phone"].text;
+    int? contact = int.tryParse(contactText);
+
+    double? latitude = double.tryParse(latitudeText);
+    double? longitude = double.tryParse(longitudeText);
+    _hospital
+        .doc(userId)
+        .set({
+          // 'id': userId,
+          'email': fieldsNames["Email"].text,
+          'name': fieldsNames["Name"].text,
+          "contact": contact,
+          'locationLatitude': latitude,
+          'locationLongitude': longitude,
+          'address': address.text
+        })
+        .then((value) => print("Hospital Added"))
         .catchError((error) => print("Failed to add user: $error"));
   }
 }

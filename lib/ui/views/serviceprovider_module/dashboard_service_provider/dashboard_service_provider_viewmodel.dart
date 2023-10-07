@@ -13,12 +13,12 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   // String? serviceTypeForData;
 
   final NavigationService _navigationService = locator<NavigationService>();
-  final CustomNavigationService _customNavigationServiceService =
-      locator<CustomNavigationService>();
+  final CommonFunctionsService _commonFunctionsService =
+      locator<CommonFunctionsService>();
   String? serviceproviderImage;
 
   // getImage()
-  // if(ServiceProviderModel.currentServiceProvider.service==){
+  // if(ServiceProviderModel.service==){
 
   // }
   Widget buildMarquee(context) {
@@ -34,19 +34,24 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   }
 
   navigateToLogin() async {
-    return _customNavigationServiceService.navigateToLoginFromSignout(
+    return _commonFunctionsService.navigateToLoginFromSignout(
         key: "serviceProviderId");
   }
 
   void navigateToServiceproviderMap({destinationLocation}) {
     _navigationService.navigateToServiceprovidermapView(
         destinationLocation: destinationLocation);
+    rebuildUi();
+  }
+
+  navigateToServiceproviderReviews() {
+    return _navigationService.navigateToServiceProviderReviewView();
   }
 
   // getService() async {
   //   DocumentSnapshot snapshot = await FirebaseFirestore.instance
   //       .collection('service provider')
-  //       .doc(ServiceProviderModel.currentServiceProvider.id)
+  //       .doc(ServiceProviderModel.id)
   //       .get();
   //   String service = snapshot.get(FieldPath(['service'])).toString();
   //   serviceTypeForData = service;
@@ -54,33 +59,100 @@ class DashboardServiceProviderViewModel extends BaseViewModel {
   //   return service;
   // }
 
-  (Stream<QuerySnapshot>, String imagePath) getData() {
+  // Future<Map<String, dynamic>> getData() async {
+  //   String? imagePath;
+  //   final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+  //       await FirebaseFirestore.instance
+  //           .collection('requests')
+  //           .where("spId",
+  //               isEqualTo:
+  //                   await ServiceProviderModel.getIdFromSharedPreference())
+  //           .get();
+  //   if (ServiceProviderModel.service == 'police') {
+  //     imagePath = 'assets/police_pic.jpg';
+  //   } else if (ServiceProviderModel.service ==
+  //       'firebrigade') {
+  //     imagePath = 'assets/firebrigade_pic.jpg';
+  //   } else if (ServiceProviderModel.service ==
+  //       'ambulance') {
+  //     imagePath = 'assets/ambulance_pic.jpg';
+  //   }
+
+  //   // Create a map to hold the values you want to return
+  //   Map<String, dynamic> result = {
+  //     'querySnapshot': querySnapshot,
+  //     'imagePath': imagePath,
+  //   };
+
+  //   return result;
+  // }
+  Future<String?> getImage() async {
     String? imagePath;
-    Stream<QuerySnapshot> collectionReference = FirebaseFirestore.instance
-        .collection('requests')
-        .where("to",
-            isEqualTo: ServiceProviderModel.currentServiceProvider.service)
-        .snapshots();
-    if (ServiceProviderModel.currentServiceProvider.service == 'police') {
+    if (await ServiceProviderModel.getService() == 'police') {
       imagePath = 'assets/police_pic.jpg';
-    } else if (ServiceProviderModel.currentServiceProvider.service ==
-        'firebrigade') {
+    } else if (await ServiceProviderModel.getService() == 'firebrigade') {
       imagePath = 'assets/firebrigade_pic.jpg';
-    } else if (ServiceProviderModel.currentServiceProvider.service ==
-        'ambulance') {
+    } else if (await ServiceProviderModel.getService() == 'ambulance') {
       imagePath = 'assets/ambulance_pic.jpg';
     }
-    return (collectionReference, imagePath!);
+    return imagePath = serviceproviderImage;
   }
 
-  deleteRequest(String id) async {
-    await FirebaseFirestore.instance
-        .collection('requests')
-        .doc(id)
-        .delete()
-        .then((value) => print("req deleted"))
-        .catchError((error) {
-      print("Failed to delete document: $error");
+  Future<QuerySnapshot<Map<String, dynamic>>> getRequests() async {
+    final String id = await ServiceProviderModel.getIdFromSharedPreference();
+    print("Current User ID: $id");
+
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await FirebaseFirestore.instance
+            .collection('requests')
+            .where("spId", isEqualTo: id)
+            .where("status", isEqualTo: "pending")
+            .get();
+
+    return querySnapshot;
+  }
+
+  // (Stream<QuerySnapshot>, String imagePath) getData() {
+  //   String? imagePath;
+  //   Stream<QuerySnapshot> collectionReference = FirebaseFirestore.instance
+  //       .collection('requests')
+  //       .where("spId",
+  //           isEqualTo: ServiceProviderModel.getIdFromSharedPreference())
+  //       .snapshots();
+  //   if (ServiceProviderModel.service == 'police') {
+  //     imagePath = 'assets/police_pic.jpg';
+  //   } else if (ServiceProviderModel.service == 'firebrigade') {
+  //     imagePath = 'assets/firebrigade_pic.jpg';
+  //   } else if (ServiceProviderModel.service == 'ambulance') {
+  //     imagePath = 'assets/ambulance_pic.jpg';
+  //   }
+  //   return (collectionReference, imagePath!);
+  // }
+  updateRequestStatus(reqId) async {
+    // Get the current user's ID (replace with your actual method to get the user ID)
+    // String userId = await ServiceProviderModel.getIdFromSharedPreference();
+
+    // Reference to the document you want to update
+    DocumentReference requestDocument =
+        FirebaseFirestore.instance.collection('requests').doc(reqId);
+
+    // Update the specific field in the document
+    await requestDocument.update({
+      'status':
+          'completed', // Replace 'fieldName' with the actual field name you want to update
     });
+  }
+
+  deleteRequest({id, collection}) async {
+    await _commonFunctionsService.deleteRequest(id: id, collection: collection);
+  }
+
+  deleteAccount() async {
+    // print(id);
+    await _commonFunctionsService.deleteUser(
+        id: await ServiceProviderModel.getIdFromSharedPreference(),
+        collection: "service provider",
+        localKey: "serviceProviderId");
+    rebuildUi();
   }
 }

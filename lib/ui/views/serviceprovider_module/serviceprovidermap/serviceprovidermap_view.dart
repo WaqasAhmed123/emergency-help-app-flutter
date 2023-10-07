@@ -28,9 +28,8 @@ class ServiceprovidermapView extends StackedView<ServiceprovidermapViewModel> {
           onMapCreated: (controller) {
             viewModel.mapController = controller;
           },
-          initialCameraPosition: CameraPosition(
-              zoom: 15,
-              target: ServiceProviderModel.currentServiceProvider.location!),
+          initialCameraPosition:
+              CameraPosition(zoom: 15, target: ServiceProviderModel.location!),
           myLocationButtonEnabled: true,
           myLocationEnabled: true,
           markers: Set<Marker>.of(viewModel.markers.values),

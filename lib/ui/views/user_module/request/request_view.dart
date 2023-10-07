@@ -4,8 +4,11 @@ import '../../../widgets/container_button.dart';
 import '../../../widgets/dropdown_input.dart';
 import 'request_viewmodel.dart';
 
+// ignore: must_be_immutable
 class RequestView extends StackedView<RequestViewModel> {
-  const RequestView({super.key});
+  double userLat;
+  double userLng;
+  RequestView({super.key, required this.userLat, required this.userLng});
 
   @override
   Widget builder(
@@ -89,7 +92,7 @@ class RequestView extends StackedView<RequestViewModel> {
                       );
 
                       try {
-                        await viewModel.addServices();
+                        await viewModel.request();
                         Navigator.of(context)
                             .pop(); // Close the progress indicator dialog
 
@@ -100,6 +103,7 @@ class RequestView extends StackedView<RequestViewModel> {
                           ),
                         );
                       } catch (error) {
+                        print(error);
                         Navigator.of(context)
                             .pop(); // Close the progress indicator dialog
 
@@ -123,5 +127,5 @@ class RequestView extends StackedView<RequestViewModel> {
   RequestViewModel viewModelBuilder(
     BuildContext context,
   ) =>
-      RequestViewModel();
+      RequestViewModel(userLat: userLat, userLng: userLng);
 }

@@ -8,7 +8,12 @@ import 'signup_viewmodel.dart';
 // ignore: must_be_immutable
 class SignupView extends StackedView<SignupViewModel> {
   bool isUser;
-  SignupView({Key? key, this.isUser = false}) : super(key: key);
+  bool isHospital;
+  SignupView({
+    Key? key,
+    this.isUser = false,
+    this.isHospital = false,
+  }) : super(key: key);
   @override
   Widget builder(
     BuildContext context,
@@ -18,6 +23,7 @@ class SignupView extends StackedView<SignupViewModel> {
     var heightSize = MediaQuery.of(context).size.height;
     var widthSize = MediaQuery.of(context).size.width;
     viewModel.isUser = isUser;
+    viewModel.isHospital = isHospital;
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -59,24 +65,30 @@ class SignupView extends StackedView<SignupViewModel> {
                     physics: const ClampingScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: isUser == true
-                        ? 3
+                        ? 4
                         : viewModel.fieldsNames.keys.length + 1,
                     itemBuilder: (context, index) {
-                      if (index == 5) {
-                        return dropdownInput(
-                            hintText: "Type of Service",
-                            value: viewModel.selectedOption,
-                            items: viewModel.servicesList
-                                .map<DropdownMenuItem<String>>((String key) {
-                              return DropdownMenuItem<String>(
-                                value: key,
-                                child: Text(
-                                  key,
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              );
-                            }).toList(),
-                            onChanged: viewModel.onChanged());
+                      if (index == 6) {
+                        return isHospital == false
+                            ? dropdownInput(
+                                hintText: "Type of Service",
+                                value: viewModel.selectedOption,
+                                items: viewModel.servicesList
+                                    .map<DropdownMenuItem<String>>(
+                                        (String key) {
+                                  return DropdownMenuItem<String>(
+                                    value: key,
+                                    child: Text(
+                                      key,
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: viewModel.onChanged())
+                            : inputField(
+                                controller: viewModel.address,
+                                hintText: "Adress");
                       } else {
                         bool isPasswordKey =
                             viewModel.fieldsNames.keys.elementAt(index) ==
@@ -103,13 +115,17 @@ class SignupView extends StackedView<SignupViewModel> {
                     context: context,
                     onTap: () {
                       if (viewModel.formKey.currentState!.validate()) {
+                        print(
+                            "email${viewModel.fieldsNames.values.elementAt(2).text}");
+                        print(
+                            "pass${viewModel.fieldsNames.values.elementAt(3).text}");
                         viewModel.signupWithEmail(
                             email: viewModel.fieldsNames.values
-                                .elementAt(1)
+                                .elementAt(2)
                                 .text
                                 .trim(),
                             password:
-                                viewModel.fieldsNames.values.elementAt(2).text);
+                                viewModel.fieldsNames.values.elementAt(3).text);
                       }
                     }),
               ),

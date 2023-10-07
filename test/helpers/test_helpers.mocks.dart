@@ -627,24 +627,8 @@ class MockDialogService extends _i1.Mock implements _i2.DialogService {
       );
 }
 
-/// A class which mocks [CustomNavigationService].
+/// A class which mocks [CommonFunctionsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCustomNavigationService extends _i1.Mock
-    implements _i6.CustomNavigationService {
-  @override
-  void navigateToLoginFromSignout({required dynamic key}) => super.noSuchMethod(
-        Invocation.method(
-          #navigateToLoginFromSignout,
-          [],
-          {#key: key},
-        ),
-        returnValueForMissingStub: null,
-      );
-}
-
-/// A class which mocks [DatastorageService].
-///
-/// See the documentation for Mockito's code generation for more information.
-// class MockDatastorageService extends _i1.Mock
-//     implements _i7.DatastorageService {}
+class MockCommonFunctionsService extends _i1.Mock
+    implements _i6.CommonFunctionsService {}

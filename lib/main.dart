@@ -7,20 +7,19 @@ import 'package:squip/app/app.router.dart';
 import 'package:squip/models/serviceprovider_model.dart';
 import 'package:squip/models/user_model.dart';
 import 'package:stacked_services/stacked_services.dart';
-
 import 'app/app.locator.dart';
 import 'firebase_options.dart';
 
 Future<String> getInitialRoute() async {
   final prefs = await SharedPreferences.getInstance();
-  final serviceProviderId = prefs.getString("userId");
+  // final serviceProviderId = prefs.getString("userId");
   if (prefs.containsKey("userId") && prefs.getBool("isLoggedIn") == true) {
-    await UserModel.currentUser.getDataFromFirebase();
+    await UserModel.getDataFromFirebase();
     return Routes.homeView;
   }
   if (prefs.containsKey("serviceProviderId") &&
       prefs.getBool('isLoggedIn') == true) {
-    await ServiceProviderModel.currentServiceProvider.getDataFromFirebase();
+    await ServiceProviderModel.getDataFromFirebase();
     return Routes.dashboardServiceProviderView;
   }
   return Routes.startupView;
@@ -42,7 +41,7 @@ void main() async {
 // ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   String initialRoute;
-  MyApp({required this.initialRoute});
+  MyApp({super.key, required this.initialRoute});
   @override
   Widget build(BuildContext context) {
     const Map<int, Color> color = {
@@ -59,15 +58,12 @@ class MyApp extends StatelessWidget {
     };
 
     return MaterialApp(
-
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-          // backgroundColor: Colors.white,
-          primaryColor: Color(0XFF32CD30),
+          scaffoldBackgroundColor: Colors.white,
+          primaryColor: const Color(0XFF32CD30),
           primarySwatch: const MaterialColor(0XFF32CD30, color),
-          // focusColor: kcPrimaryColor,
           textTheme: const TextTheme(
             titleLarge: TextStyle(
                 fontSize: 30, fontWeight: FontWeight.w900, color: Colors.black),
@@ -79,9 +75,7 @@ class MyApp extends StatelessWidget {
                 fontSize: 15, fontWeight: FontWeight.w900, color: Colors.white),
           )),
 
-      // initialRoute: Routes.dashboardServiceProviderView,
       initialRoute: initialRoute,
-      // initialRoute: Routes.homeView,
       onGenerateRoute: StackedRouter().onGenerateRoute,
       navigatorKey: StackedService.navigatorKey,
       navigatorObservers: [
