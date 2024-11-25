@@ -11,7 +11,8 @@ class ServiceprovidermapView extends StackedView<ServiceprovidermapViewModel> {
 
   @override
   onViewModelReady(ServiceprovidermapViewModel viewModel) async {
-    await viewModel.polyLinesForRoute();
+    // await viewModel.polyLinesForRoute();
+    await viewModel.drawRoute();
     super.onViewModelReady(viewModel);
   }
 
@@ -22,7 +23,7 @@ class ServiceprovidermapView extends StackedView<ServiceprovidermapViewModel> {
     Widget? child,
   ) {
     return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: GoogleMap(
           polylines: viewModel.polylines,
           onMapCreated: (controller) {
