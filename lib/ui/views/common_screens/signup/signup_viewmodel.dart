@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:squip/corePlatform/util/AppConstants.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../../../../app/app.locator.dart';
 import '../../../../app/app.router.dart';
+import '../../../../corePlatform/util/LocalStorage.dart';
 
 class SignupViewModel extends BaseViewModel {
   bool? isUser; //check whether its user or service provider
@@ -15,6 +17,17 @@ class SignupViewModel extends BaseViewModel {
     obscureText = !obscureText;
     // notifyListeners();
     rebuildUi();
+  }
+
+  String? currentModule;
+  bool? moduleFetching;
+
+  Future<void> fetchCurrentModule() async {
+    setBusy(true);
+    moduleFetching = true;
+    currentModule = await LocalStorage.getCurrentModule();
+    moduleFetching = false;
+    setBusy(false);
   }
 
 //services
@@ -27,7 +40,7 @@ class SignupViewModel extends BaseViewModel {
   final CollectionReference _hospital =
       FirebaseFirestore.instance.collection('hospital');
   //navigation
-  void navigateToLogin() => _navigationService.navigateTo(Routes.loginView);
+  void navigateToLogin() => _navigationService.replaceWithLoginView();
 
   TextEditingController address = TextEditingController();
 
@@ -44,7 +57,8 @@ class SignupViewModel extends BaseViewModel {
         password: password!,
       );
       String? userId = FirebaseAuth.instance.currentUser?.uid;
-      if (isUser == true && isHospital == false) {
+      if (currentModule == AppConstants.USER) {
+      // if (isUser == true && isHospital == false) {
         _user
             .doc(userId)
             .set({
@@ -54,11 +68,13 @@ class SignupViewModel extends BaseViewModel {
             })
             .then((value) => print("User Added"))
             .catchError((error) => print("Failed to add user: $error"));
-      } else if (isUser == false && isHospital == false) {
+      } else if (currentModule == AppConstants.SERVICE_PROVIDER) {
+      // } else if (isUser == false && isHospital == false) {
         addServices(userId: userId);
-      } else if (isUser == false && isHospital == true) {
-        addHospital(userId: userId);
       }
+      //  else if (isUser == false && isHospital == true) {
+      //   addHospital(userId: userId);
+      // }
 
       setBusy(false);
       rebuildUi();

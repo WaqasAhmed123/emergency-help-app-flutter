@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:squip/corePlatform/util/AppConstants.dart';
+import 'package:squip/corePlatform/util/LocalStorage.dart';
 import 'package:squip/models/serviceprovider_model.dart';
 import 'package:squip/models/user_model.dart';
 import 'package:stacked/stacked.dart';
@@ -10,8 +12,8 @@ import '../../../../app/app.locator.dart';
 import '../../../../app/app.router.dart';
 
 class LoginViewModel extends BaseViewModel {
-  bool? isUser;
-  bool? isHospital;
+  // bool? isUser;
+  // bool? isHospital;
   bool obscureText = true;
 
   // LoginViewModel(this.obscureText);
@@ -67,8 +69,8 @@ class LoginViewModel extends BaseViewModel {
   get currentState => null;
   void setModelBusy() {}
 
-  void navigateToSignUp() => _navigationService.navigateToSignupView(
-      isUser: isUser!, isHospital: isHospital!);
+  void navigateToSignUp() => _navigationService.navigateToSignupView();
+  // isUser: isUser!, isHospital: isHospital!);
 
   void navigateToHome() => _navigationService.replaceWithHomeView();
   // void navigateToHome() => _navigationService.navigateTo(Routes.homeView);
@@ -89,8 +91,10 @@ class LoginViewModel extends BaseViewModel {
           .signInWithEmailAndPassword(email: email!, password: password!);
       currentuserId = credential.user?.uid;
 
-      if (await isUserExistsInUsersCollection() == true && isUser == true) {
-        isUserModule = true;
+      if (await isUserExistsInUsersCollection() == true &&
+          (await LocalStorage.getCurrentModule() == AppConstants.USER)) {
+        // if (await isUserExistsInUsersCollection() == true && isUser == true) {
+        // isUserModule = true;
         await saveIdInSharedPreference("userId", currentuserId!);
         await UserModel.getDataFromFirebase();
 
@@ -98,8 +102,9 @@ class LoginViewModel extends BaseViewModel {
         setBusy(false);
         rebuildUi();
       } else if (await isServiceProviderExistsInCollection() == true &&
-          isUser == false) {
-        isUserModule = false;
+          (await LocalStorage.getCurrentModule() ==
+              AppConstants.SERVICE_PROVIDER)) {
+        // isUserModule = false;
         await saveIdInSharedPreference("serviceProviderId", currentuserId!);
         await ServiceProviderModel.getDataFromFirebase();
 
@@ -118,11 +123,16 @@ class LoginViewModel extends BaseViewModel {
       //   setBusy(false);
       //   rebuildUi();
       // }
-       else if (isUserModule == true && isHospital == false) {
+      else if (await LocalStorage.getCurrentModule() == AppConstants.USER) {
+        // else if ( isUserModule == true && isHospital == false) {
         _dialogService.showDialog(title: "User doesn't exist in user module");
-      } else if (isUserModule == false && isHospital == true) {
-        _dialogService.showDialog(title: "Hospital doesn't exist");
-      } else if (isUserModule == false && isHospital == false) {
+      }
+      //  else if (isUserModule == false && isHospital == true) {
+      //   _dialogService.showDialog(title: "Hospital doesn't exist");
+      // }
+      else if (await LocalStorage.getCurrentModule() ==
+          AppConstants.SERVICE_PROVIDER) {
+        // else if (isUserModule == false && isHospital == false) {
         _dialogService.showDialog(
             title: "Service Provider doesn't exist in Service Provider module");
       }

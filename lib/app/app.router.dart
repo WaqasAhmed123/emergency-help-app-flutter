@@ -119,22 +119,14 @@ class StackedRouter extends _i1.RouterBase {
       );
     },
     _i3.LoginView: (data) {
-      final args = data.getArgs<LoginViewArguments>(
-        orElse: () => const LoginViewArguments(),
-      );
       return _i12.MaterialPageRoute<dynamic>(
-        builder: (context) => _i3.LoginView(
-            key: args.key, isUser: args.isUser, isHospital: args.isHospital),
+        builder: (context) => _i3.LoginView(),
         settings: data,
       );
     },
     _i4.SignupView: (data) {
-      final args = data.getArgs<SignupViewArguments>(
-        orElse: () => const SignupViewArguments(),
-      );
       return _i12.MaterialPageRoute<dynamic>(
-        builder: (context) => _i4.SignupView(
-            key: args.key, isUser: args.isUser, isHospital: args.isHospital),
+        builder: (context) => _i4.SignupView(),
         settings: data,
       );
     },
@@ -188,72 +180,9 @@ class StackedRouter extends _i1.RouterBase {
 
   @override
   List<_i1.RouteDef> get routes => _routes;
+
   @override
   Map<Type, _i1.StackedRouteFactory> get pagesMap => _pagesMap;
-}
-
-class LoginViewArguments {
-  const LoginViewArguments({
-    this.key,
-    this.isUser = false,
-    this.isHospital = false,
-  });
-
-  final _i12.Key? key;
-
-  final bool isUser;
-
-  final bool isHospital;
-
-  @override
-  String toString() {
-    return '{"key": "$key", "isUser": "$isUser", "isHospital": "$isHospital"}';
-  }
-
-  @override
-  bool operator ==(covariant LoginViewArguments other) {
-    if (identical(this, other)) return true;
-    return other.key == key &&
-        other.isUser == isUser &&
-        other.isHospital == isHospital;
-  }
-
-  @override
-  int get hashCode {
-    return key.hashCode ^ isUser.hashCode ^ isHospital.hashCode;
-  }
-}
-
-class SignupViewArguments {
-  const SignupViewArguments({
-    this.key,
-    this.isUser = false,
-    this.isHospital = false,
-  });
-
-  final _i12.Key? key;
-
-  final bool isUser;
-
-  final bool isHospital;
-
-  @override
-  String toString() {
-    return '{"key": "$key", "isUser": "$isUser", "isHospital": "$isHospital"}';
-  }
-
-  @override
-  bool operator ==(covariant SignupViewArguments other) {
-    if (identical(this, other)) return true;
-    return other.key == key &&
-        other.isUser == isUser &&
-        other.isHospital == isHospital;
-  }
-
-  @override
-  int get hashCode {
-    return key.hashCode ^ isUser.hashCode ^ isHospital.hashCode;
-  }
 }
 
 class ServiceprovidermapViewArguments {
@@ -325,38 +254,28 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> navigateToLoginView({
-    _i12.Key? key,
-    bool isUser = false,
-    bool isHospital = false,
+  Future<dynamic> navigateToLoginView([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
-  }) async {
+  ]) async {
     return navigateTo<dynamic>(Routes.loginView,
-        arguments: LoginViewArguments(
-            key: key, isUser: isUser, isHospital: isHospital),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
         transition: transition);
   }
 
-  Future<dynamic> navigateToSignupView({
-    _i12.Key? key,
-    bool isUser = false,
-    bool isHospital = false,
+  Future<dynamic> navigateToSignupView([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
-  }) async {
+  ]) async {
     return navigateTo<dynamic>(Routes.signupView,
-        arguments: SignupViewArguments(
-            key: key, isUser: isUser, isHospital: isHospital),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
@@ -497,38 +416,28 @@ extension NavigatorStateExtension on _i14.NavigationService {
         transition: transition);
   }
 
-  Future<dynamic> replaceWithLoginView({
-    _i12.Key? key,
-    bool isUser = false,
-    bool isHospital = false,
+  Future<dynamic> replaceWithLoginView([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
-  }) async {
+  ]) async {
     return replaceWith<dynamic>(Routes.loginView,
-        arguments: LoginViewArguments(
-            key: key, isUser: isUser, isHospital: isHospital),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,
         transition: transition);
   }
 
-  Future<dynamic> replaceWithSignupView({
-    _i12.Key? key,
-    bool isUser = false,
-    bool isHospital = false,
+  Future<dynamic> replaceWithSignupView([
     int? routerId,
     bool preventDuplicates = true,
     Map<String, String>? parameters,
     Widget Function(BuildContext, Animation<double>, Animation<double>, Widget)?
         transition,
-  }) async {
+  ]) async {
     return replaceWith<dynamic>(Routes.signupView,
-        arguments: SignupViewArguments(
-            key: key, isUser: isUser, isHospital: isHospital),
         id: routerId,
         preventDuplicates: preventDuplicates,
         parameters: parameters,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:squip/corePlatform/util/AppConstants.dart';
+import 'package:squip/corePlatform/util/LocalStorage.dart';
 import 'package:stacked/stacked.dart';
 import '../../../widgets/dropdown_input.dart';
 import '../../../widgets/input_field.dart';
@@ -7,13 +9,19 @@ import 'signup_viewmodel.dart';
 
 // ignore: must_be_immutable
 class SignupView extends StackedView<SignupViewModel> {
-  bool isUser;
-  bool isHospital;
-  SignupView({
-    Key? key,
-    this.isUser = false,
-    this.isHospital = false,
-  }) : super(key: key);
+  // bool isUser;
+  // bool isHospital;
+  // SignupView({
+  //   Key? key,
+  //   this.isUser = false,
+  //   this.isHospital = false,
+  // }) : super(key: key);
+
+  @override
+  void onViewModelReady(SignupViewModel viewModel) {
+    viewModel.fetchCurrentModule();
+  }
+
   @override
   Widget builder(
     BuildContext context,
@@ -22,8 +30,8 @@ class SignupView extends StackedView<SignupViewModel> {
   ) {
     var heightSize = MediaQuery.of(context).size.height;
     var widthSize = MediaQuery.of(context).size.width;
-    viewModel.isUser = isUser;
-    viewModel.isHospital = isHospital;
+    // viewModel.isUser = isUser;
+    // viewModel.isHospital = isHospital;
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -56,58 +64,67 @@ class SignupView extends StackedView<SignupViewModel> {
               const SizedBox(
                 height: 20,
               ),
-              Form(
-                key: viewModel.formKey,
-                child: Container(
-                  // height: 100,
-                  child: ListView.builder(
-                    // physics: NeverScrollableScrollPhysics(),
-                    physics: const ClampingScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: isUser == true
-                        ? 4
-                        : viewModel.fieldsNames.keys.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == 6) {
-                        return isHospital == false
-                            ? dropdownInput(
-                                hintText: "Type of Service",
-                                value: viewModel.selectedOption,
-                                items: viewModel.servicesList
-                                    .map<DropdownMenuItem<String>>(
-                                        (String key) {
-                                  return DropdownMenuItem<String>(
-                                    value: key,
-                                    child: Text(
-                                      key,
-                                      style:
-                                          const TextStyle(color: Colors.black),
-                                    ),
-                                  );
-                                }).toList(),
-                                onChanged: viewModel.onChanged())
-                            : inputField(
-                                controller: viewModel.address,
-                                hintText: "Adress");
-                      } else {
-                        bool isPasswordKey =
-                            viewModel.fieldsNames.keys.elementAt(index) ==
-                                "Password";
-                        return inputField(
-                            obscureText:
-                                isPasswordKey ? viewModel.obscureText : false,
-                            suffixIconVisible: isPasswordKey,
-                            onPressed:
-                                isPasswordKey ? viewModel.togglePassword : null,
-                            controller:
-                                viewModel.fieldsNames.values.elementAt(index),
-                            hintText:
-                                viewModel.fieldsNames.keys.elementAt(index));
-                      }
-                    },
-                  ),
-                ),
-              ),
+              viewModel.isBusy && viewModel.moduleFetching!
+                  ? Center(child: CircularProgressIndicator())
+                  : // Show loader while busy
+                  Form(
+                      key: viewModel.formKey,
+                      child: Container(
+                        // height: 100,
+                        child: ListView.builder(
+                          // physics: NeverScrollableScrollPhysics(),
+                          physics: const ClampingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: viewModel.currentModule ==
+                          // itemCount: LocalStorage.getCurrentModule() ==
+                                  AppConstants.USER
+                              //  isUser == true
+                              ? 4
+                              : viewModel.fieldsNames.keys.length + 1,
+                          itemBuilder: (context, index) {
+                            if (index == 6) {
+                              // return isHospital == false
+                              //     ?
+                              dropdownInput(
+                                  hintText: "Type of Service",
+                                  value: viewModel.selectedOption,
+                                  items: viewModel.servicesList
+                                      .map<DropdownMenuItem<String>>(
+                                          (String key) {
+                                    return DropdownMenuItem<String>(
+                                      value: key,
+                                      child: Text(
+                                        key,
+                                        style: const TextStyle(
+                                            color: Colors.black),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: viewModel.onChanged());
+                              // : inputField(
+                              //     controller: viewModel.address,
+                              //     hintText: "Adress");
+                            } else {
+                              bool isPasswordKey =
+                                  viewModel.fieldsNames.keys.elementAt(index) ==
+                                      "Password";
+                              return inputField(
+                                  obscureText: isPasswordKey
+                                      ? viewModel.obscureText
+                                      : false,
+                                  suffixIconVisible: isPasswordKey,
+                                  onPressed: isPasswordKey
+                                      ? viewModel.togglePassword
+                                      : null,
+                                  controller: viewModel.fieldsNames.values
+                                      .elementAt(index),
+                                  hintText: viewModel.fieldsNames.keys
+                                      .elementAt(index));
+                            }
+                          },
+                        ),
+                      ),
+                    ),
               Center(
                 child: containerButton(
                     busy: viewModel.isBusy,

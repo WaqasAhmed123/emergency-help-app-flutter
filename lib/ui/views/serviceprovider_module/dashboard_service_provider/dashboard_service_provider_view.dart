@@ -136,7 +136,7 @@ class DashboardServiceProviderView
                                         style: const TextStyle(
                                             fontSize: 14, color: Colors.grey),
                                       ),
-                                      ButtonBar(
+                                      OverflowBar(
                                         alignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [

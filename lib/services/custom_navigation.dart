@@ -11,7 +11,7 @@ class CommonFunctionsService {
 
   navigateToLoginFromSignout({required key}) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(key);
+    await prefs.clear();
     await FirebaseAuth.instance.signOut();
     _navigationService.clearStackAndShow(Routes.startupView);
   }
